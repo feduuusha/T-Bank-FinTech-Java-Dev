@@ -1,10 +1,11 @@
-package org.tbank.fintech;
+package org.tbank.fintech.lesson2;
 
 import lombok.extern.slf4j.Slf4j;
-import org.tbank.fintech.model.City;
-import org.tbank.fintech.util.CityMapper;
+import org.tbank.fintech.lesson2.model.City;
+import org.tbank.fintech.lesson2.util.CityMapper;
 
 import java.io.*;
+import java.util.LinkedList;
 
 @Slf4j
 public class Main {

@@ -1,11 +1,11 @@
-package org.tbank.fintech;
+package org.tbank.fintech.lesson2;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.tbank.fintech.model.City;
-import org.tbank.fintech.model.Coordinates;
-import org.tbank.fintech.util.CityMapper;
+import org.tbank.fintech.lesson2.model.City;
+import org.tbank.fintech.lesson2.model.Coordinates;
+import org.tbank.fintech.lesson2.util.CityMapper;
 
 import java.io.BufferedWriter;
 import java.io.File;
