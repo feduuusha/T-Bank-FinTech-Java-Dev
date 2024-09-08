@@ -5,7 +5,6 @@ import org.tbank.fintech.lesson2.model.City;
 import org.tbank.fintech.lesson2.util.CityMapper;
 
 import java.io.*;
-import java.util.LinkedList;
 
 @Slf4j
 public class Main {

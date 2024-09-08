@@ -14,7 +14,7 @@ public class Main {
         List<Integer> listInt = List.of(5, 6, 7, 9, 10);
         list.addAll(listInt);
         System.out.println(list);
-//        part 3
+//        part 3 (ver 1)
         CustomLinkedList<Integer> customLinkedList =
                 IntStream.range(0, 1001)
                 .filter(i -> i % 2 == 0)
@@ -25,10 +25,18 @@ public class Main {
                     return customList;
                 },
                 (customList1, customList2) -> {
-                    for (int i = 0; i < customList2.size(); ++i) customList1.add(customList2.get(i));
+                    customList1.addAll(customList2);
                     return customList1;
                 }
         );
+        System.out.println(customLinkedList);
+
+        //        part 3 (ver 2 with custom collector)
+        CustomLinkedListCollector<Integer> collector = new CustomLinkedListCollector<>();
+        customLinkedList =
+                IntStream.range(0, 1001)
+                        .filter(i -> i % 2 != 0)
+                        .boxed().collect(collector);
         System.out.println(customLinkedList);
     }
 }

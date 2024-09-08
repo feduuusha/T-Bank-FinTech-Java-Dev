@@ -102,6 +102,19 @@ public class CustomLinkedListImpl<E> implements CustomLinkedList<E> {
     }
 
     @Override
+    public boolean addAll(CustomLinkedList<? extends E> c) {
+        if (c == null || c.size() == 0) {
+            return false;
+        }
+        else {
+            for (int i = 0; i < c.size(); ++i) {
+                this.add(c.get(i));
+            }
+            return true;
+        }
+    }
+
+    @Override
     public int size() {
         return this.size;
     }
