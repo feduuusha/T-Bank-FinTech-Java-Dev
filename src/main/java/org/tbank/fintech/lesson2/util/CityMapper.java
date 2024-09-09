@@ -1,9 +1,9 @@
-package org.tbank.fintech.util;
+package org.tbank.fintech.lesson2.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.tbank.fintech.model.City;
+import org.tbank.fintech.lesson2.model.City;
 
 import java.io.File;
 import java.io.IOException;
