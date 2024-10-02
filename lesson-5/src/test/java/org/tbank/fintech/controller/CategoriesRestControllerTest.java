@@ -29,7 +29,7 @@ public class CategoriesRestControllerTest {
     private CategoryService categoryService;
 
     @Test
-    @DisplayName("Test create category")
+    @DisplayName("Controller create category test, method:post endpoint:/api/v1/places/categories")
     public void createCategoryTest() throws Exception {
         // given
         String payload = """
@@ -37,8 +37,7 @@ public class CategoriesRestControllerTest {
                 	"slug": "show",
                 	"name": "Legendary show"
                 }""";
-        Category testCategory = new Category("show", "Legendary show");
-        testCategory.setId(0L);
+        Category testCategory = new Category(0L, "show", "Legendary show");
         when(categoryService.createCategory("show", "Legendary show")).thenReturn(testCategory);
 
         // when
@@ -52,10 +51,10 @@ public class CategoriesRestControllerTest {
     }
 
     @Test
-    @DisplayName("Test delete category by id")
+    @DisplayName("Controller delete category by id test, method:delete endpoint:/api/v1/places/categories/{categoryId}")
     public void deleteCategoryByIdTest() throws Exception {
         // given
-        String categoryId = "0";
+        Long categoryId = 0L;
 
         // when
         mockMvc.perform(delete("/api/v1/places/categories/{categoryId}", categoryId))
@@ -63,7 +62,7 @@ public class CategoriesRestControllerTest {
     }
 
     @Test
-    @DisplayName("Test find all categories")
+    @DisplayName("Controller find all categories test, method:get endpoint:/api/v1/places/categories")
     public void findAllCategoriesTest() throws Exception {
         // given
         List<Category> categories = List.of(
@@ -80,13 +79,12 @@ public class CategoriesRestControllerTest {
     }
 
     @Test
-    @DisplayName("Test find category by id")
+    @DisplayName("Controller find category by id test, method:get endpoint:/api/v1/places/categories/{categoryId}")
     public void findCategoryByIdTest() throws Exception {
         // given
-        String categoryId = "0";
-        Category testCategory = new Category("show", "Legendary show");
-        testCategory.setId(0L);
-        when(categoryService.findCategoryById(0L)).thenReturn(testCategory);
+        Long categoryId = 0L;
+        Category testCategory = new Category(categoryId,"show", "Legendary show");
+        when(categoryService.findCategoryById(categoryId)).thenReturn(testCategory);
 
         // then
         mockMvc.perform(get("/api/v1/places/categories/{categoryId}", categoryId))
@@ -96,7 +94,7 @@ public class CategoriesRestControllerTest {
     }
 
     @Test
-    @DisplayName("Test update category by id")
+    @DisplayName("Controller update category by id, method:put endpoint:/api/v1/places/categories/{categoryId}")
     public void updateCategoryByIdTest() throws Exception {
         // given
         String payload = """
@@ -105,8 +103,7 @@ public class CategoriesRestControllerTest {
                 	"name": "cat"
                 }""";
         Long categoryId = 0L;
-        Category testCategory = new Category("msk", "Moskow");
-        testCategory.setId(0L);
+        Category testCategory = new Category(categoryId,"msk", "Moskow");
         when(categoryService.findCategoryById(categoryId)).thenReturn(testCategory);
 
         // then

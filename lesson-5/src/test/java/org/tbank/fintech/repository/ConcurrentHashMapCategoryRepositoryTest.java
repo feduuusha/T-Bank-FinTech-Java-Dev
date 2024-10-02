@@ -106,10 +106,8 @@ class ConcurrentHashMapCategoryRepositoryTest {
     @DisplayName("initializeByListOfCategories should initialize the repository with a list of categories")
     void testInitializeByListOfCategories() {
         // given
-        Category category1 = new Category("Category 1", "Description 1");
-        category1.setId(1L);
-        Category category2 = new Category("Category 2", "Description 2");
-        category2.setId(2L);
+        Category category1 = new Category(1L, "Category 1", "Description 1");
+        Category category2 = new Category(2L, "Category 2", "Description 2");
         List<Category> categories = List.of(category1, category2);
 
         // when

@@ -30,7 +30,7 @@ public class LocationsRestControllerTest {
     private LocationService locationService;
 
     @Test
-    @DisplayName("Test create location")
+    @DisplayName("Controller create location test, method:post endpoint:/api/v1/locations")
     public void createLocationTest() throws Exception {
         // given
         String payload = """
@@ -45,8 +45,7 @@ public class LocationsRestControllerTest {
                     "language": "ru"
                 }""";
         Coords coords = new Coords(56.32688699999997, 44.00598599999999);
-        Location testLocation = new Location("orn", "ORENBURG", "GMT+03:00", coords, "ru");
-        testLocation.setId(0L);
+        Location testLocation = new Location(0L, "orn", "ORENBURG", "GMT+03:00", coords, "ru");
         when(locationService.createLocation("orn", "ORENBURG", "GMT+03:00", coords,  "ru")).thenReturn(testLocation);
 
         // when
@@ -60,10 +59,10 @@ public class LocationsRestControllerTest {
     }
 
     @Test
-    @DisplayName("Test delete location by id")
+    @DisplayName("Controller delete location by id test, method:delete endpoint:/api/v1/locations/{locationId}")
     public void deleteLocationByIdTest() throws Exception {
         // given
-        String locationId = "0";
+        Long locationId = 0L;
 
         // when
         mockMvc.perform(delete("/api/v1/locations/{locationId}", locationId))
@@ -71,7 +70,7 @@ public class LocationsRestControllerTest {
     }
 
     @Test
-    @DisplayName("Test find all lcations")
+    @DisplayName("Controller find all locations test, method:get endpoint:/api/v1/locations")
     public void findAllLocationsTest() throws Exception {
         // given
         List<Location> locations = List.of(
@@ -88,13 +87,12 @@ public class LocationsRestControllerTest {
     }
 
     @Test
-    @DisplayName("Test find location by id")
+    @DisplayName("Controller find location by id test, method:get endpoint:/api/v1/locations/{locationId}")
     public void findLocationByIdTest() throws Exception {
         // given
-        String locationId = "0";
-        Location testLocation = new Location("org", "tbank", "GMT: 00:00", new Coords(77D, 99D), "es");
-        testLocation.setId(0L);
-        when(locationService.findLocationById(0L)).thenReturn(testLocation);
+        Long locationId = 0L;
+        Location testLocation = new Location(locationId, "org", "tbank", "GMT: 00:00", new Coords(77D, 99D), "es");
+        when(locationService.findLocationById(locationId)).thenReturn(testLocation);
 
         // then
         mockMvc.perform(get("/api/v1/locations/{locationId}", locationId))
@@ -104,7 +102,7 @@ public class LocationsRestControllerTest {
     }
 
     @Test
-    @DisplayName("Test update location by id")
+    @DisplayName("Controller update location by id, method:put endpoint:/api/v1/locations/{locationId}")
     public void updateLocationByIdTest() throws Exception {
         // given
         String payload = """
@@ -119,8 +117,7 @@ public class LocationsRestControllerTest {
                     "language": "ru"
                 }""";
         Long locationId = 0L;
-        Location testLocation = new Location("org", "tbank", "GMT: 00:00", new Coords(77D, 99D), "es");
-        testLocation.setId(0L);
+        Location testLocation = new Location(locationId,"org", "tbank", "GMT: 00:00", new Coords(77D, 99D), "es");
         when(locationService.findLocationById(locationId)).thenReturn(testLocation);
 
         // then

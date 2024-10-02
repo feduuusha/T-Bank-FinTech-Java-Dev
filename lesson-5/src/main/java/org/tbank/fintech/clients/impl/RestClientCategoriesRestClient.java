@@ -23,7 +23,7 @@ public class RestClientCategoriesRestClient implements CategoriesRestClient {
         return restClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/public-api/v1.4/event-categories/")
+                        .path("/public-api/v1.4/place-categories/")
                         .queryParam("lang", lang)
                         .queryParam("order_by", orderBy)
                         .queryParam("fields", String.join(",", fields))
