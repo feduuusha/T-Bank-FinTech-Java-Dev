@@ -33,11 +33,7 @@ public class LocationsRestController {
                                                    BindingResult bindingResult,
                                                    UriComponentsBuilder uriComponentsBuilder) throws BindException {
         if (bindingResult.hasErrors()) {
-            if (bindingResult instanceof BindException exception) {
-                throw exception;
-            } else {
-                throw new BindException(bindingResult);
-            }
+            throw new BindException(bindingResult);
         } else {
             Location location = this.locationService.createLocation(payload.slug(), payload.name(), payload.timezone(), payload.coords(), payload.language());
             return ResponseEntity
@@ -58,11 +54,7 @@ public class LocationsRestController {
                                                @Valid @RequestBody UpdateLocationPayload payload,
                                                BindingResult bindingResult) throws BindException {
         if (bindingResult.hasErrors()) {
-            if (bindingResult instanceof BindException exception) {
-                throw exception;
-            } else {
-                throw new BindException(bindingResult);
-            }
+            throw new BindException(bindingResult);
         } else {
             this.locationService.updateLocation(locationId, payload.slug(), payload.name(), payload.timezone(), payload.coords(), payload.language());
             return ResponseEntity.noContent().build();

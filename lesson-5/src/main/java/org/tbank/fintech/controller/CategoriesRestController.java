@@ -39,11 +39,7 @@ public class CategoriesRestController {
                                                    BindingResult bindingResult,
                                                    UriComponentsBuilder uriComponentsBuilder) throws BindException {
         if (bindingResult.hasErrors()) {
-            if (bindingResult instanceof BindException exception) {
-                throw exception;
-            } else {
-                throw new BindException(bindingResult);
-            }
+            throw new BindException(bindingResult);
         } else {
             Category category = this.categoryService.createCategory(payload.slug(), payload.name());
             return ResponseEntity
@@ -59,11 +55,7 @@ public class CategoriesRestController {
                                                 BindingResult bindingResult,
                                                 @PathVariable Long categoryId) throws BindException {
         if (bindingResult.hasErrors()) {
-            if (bindingResult instanceof BindException exception) {
-                throw exception;
-            } else {
-                throw new BindException(bindingResult);
-            }
+            throw new BindException(bindingResult);
         } else {
             this.categoryService.updateCategoryById(categoryId, payload.slug(), payload.name());
             return ResponseEntity.noContent().build();
