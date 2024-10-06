@@ -1,0 +1,39 @@
+{
+  "mappings" : [
+    {
+      "request": {
+        "method": "GET",
+        "urlPattern": "/XML_daily.asp\\?date_req=26%2F09%2F2005"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/xml;charset=UTF-8"
+        },
+        "body": "<ValCurs Date=\"26.09.2005\" name=\"Foreign Currency Market\">\n                <Valute ID=\"R01010\">\n                <NumCode>036</NumCode>\n                <CharCode>AUD</CharCode>\n                <Nominal>1</Nominal>\n                <Name>Австралийский доллар</Name>\n                <Value>21,6225</Value>\n                <VunitRate>21,6225</VunitRate>\n                </Valute>\n                <Valute ID=\"R01035\">\n                <NumCode>826</NumCode>\n                <CharCode>GBP</CharCode>\n                <Nominal>1</Nominal>\n                <Name>Фунт стерлингов Соединенного королевства</Name>\n                <Value>50,9047</Value>\n                <VunitRate>50,9047</VunitRate>\n                </Valute>\n                <Valute ID=\"R01090\">\n                <NumCode>974</NumCode>\n                <CharCode>BYR</CharCode>\n                <Nominal>1000</Nominal>\n                <Name>Белорусских рублей</Name>\n                <Value>13,2242</Value>\n                <VunitRate>0,0132242</VunitRate>\n                </Valute>\n                </ValCurs>"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPattern": "/XML_daily.asp\\?date_req=07%2F07%2F2007"
+      },
+      "response": {
+        "status": 404
+      }
+    },
+    {
+      "request" : {
+        "method": "GET",
+        "urlPattern" : "/XML_valFull.asp"
+      },
+      "response" : {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/xml;charset=UTF-8"
+        },
+        "body": "<Valuta name=\"Foreign Currency Market Lib\">\n<Item ID=\"R01010\">\n<Name>Австралийский доллар</Name>\n<EngName>Australian Dollar</EngName>\n<Nominal>1</Nominal>\n<ParentCode>R01010</ParentCode>\n<ISO_Num_Code>36</ISO_Num_Code>\n<ISO_Char_Code>AUD</ISO_Char_Code>\n</Item>\n<Item ID=\"R01015\">\n<Name>Австрийский шиллинг</Name>\n<EngName>Austrian Shilling</EngName>\n<Nominal>1000</Nominal>\n<ParentCode>R01015</ParentCode>\n<ISO_Num_Code>40</ISO_Num_Code>\n<ISO_Char_Code>ATS</ISO_Char_Code>\n</Item></Valuta>"
+      }
+    }
+  ]
+}

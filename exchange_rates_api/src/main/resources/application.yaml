@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: Exchange Rates Api
+clients:
+  currency:
+    url: https://www.cbr.ru/scripts
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 10
+        slowCallDurationThreshold: 4s
+        slowCallRateThreshold: 50
+        failureRateThreshold: 40
+        waitDurationInOpenState: 10s
+        minimumNumberOfCalls: 10
+        slidingWindowType: COUNT_BASED
+    instances:
+      centralBankAllCurrencies:
+        base-config: default
+      centralBankCurrenciesCodes:
+        base-config: default
+
+logging:
+  level:
+    project:
+      clients: debug
+      exceptions: warn
+      services: debug
