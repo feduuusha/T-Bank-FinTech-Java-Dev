@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.tbank.fintech.exchange_rates_api.config.CacheConfig;
 import org.tbank.fintech.exchange_rates_api.config.ClientConfig;
 import org.tbank.fintech.exchange_rates_api.exception.UnavailableServiceException;
 import org.testcontainers.junit.jupiter.Container;
@@ -21,7 +22,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 /**
  * Test class for the {@link CurrencyRestClient}
  */
-@SpringBootTest(classes = {ClientConfig.class}, webEnvironment = NONE)
+@SpringBootTest(classes = {ClientConfig.class, CacheConfig.class}, webEnvironment = NONE)
 @Testcontainers(disabledWithoutDocker = true)
 public class CurrencyRestClientTests {
 
