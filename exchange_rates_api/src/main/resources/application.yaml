@@ -4,6 +4,10 @@ spring:
 clients:
   currency:
     url: https://www.cbr.ru/scripts
+    number-connection-at-same-time: 5
+  events:
+    url: https://kudago.com
+    number-connection-at-same-time: 5
 resilience4j:
   circuitbreaker:
     configs:

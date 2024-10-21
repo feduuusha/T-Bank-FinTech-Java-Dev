@@ -88,11 +88,10 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.8</version>
+                <version>0.8.12</version>
                 <configuration>
                     <excludes>
                         <exclude>org/tbank/fintech/controller/payload/**</exclude>
-                        <exclude>org/tbank/fintech/command_runner/**</exclude>
                         <exclude>org/tbank/fintech/entity/**</exclude>
                         <exclude>org/tbank/fintech/aspect/**</exclude>
                         <exclude>org/tbank/fintech/config/**</exclude>

@@ -4,7 +4,6 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
@@ -13,20 +12,22 @@ import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
+import org.tbank.fintech.exchange_rates_api.client.CachedCurrency;
 import org.tbank.fintech.exchange_rates_api.client.CurrencyRestClient;
 import org.tbank.fintech.exchange_rates_api.exception.UnavailableServiceException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+import java.util.concurrent.Semaphore;
 
 @RequiredArgsConstructor
 @Slf4j
-public class CentralBankCurrencyRestClient implements CurrencyRestClient {
+public class CentralBankCurrencyRestClient implements CurrencyRestClient, CachedCurrency {
 
     private final RestClient restClient;
-    @Autowired
-    private CacheManager cacheManager;
+    private final CacheManager cacheManager;
+    private final Semaphore centralBankSemaphore;
 
     @Override
     @Cacheable("allCurrencies")
@@ -41,15 +42,23 @@ public class CentralBankCurrencyRestClient implements CurrencyRestClient {
 
     @Nullable
     private String receiveAllCurrenciesFromApi(LocalDate date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        return this.restClient
-                .get()
-                .uri("/XML_daily.asp?date_req={date_req}", date.format(formatter))
-                .accept(MediaType.APPLICATION_XML)
-                .retrieve()
-                .body(String.class);
+        try {
+            centralBankSemaphore.acquire();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            return this.restClient
+                    .get()
+                    .uri("/XML_daily.asp?date_req={date_req}", date.format(formatter))
+                    .accept(MediaType.APPLICATION_XML)
+                    .retrieve()
+                    .body(String.class);
+        } catch (InterruptedException e) {
+            throw new IllegalStateException(e);
+        } finally {
+            centralBankSemaphore.release();
+        }
     }
 
+    @Override
     @Scheduled(fixedRate = 600000)
     public void updateAllCurrenciesXmlCache() {
         try {
@@ -88,14 +97,22 @@ public class CentralBankCurrencyRestClient implements CurrencyRestClient {
     }
 
     private String receiveAllCurrenciesCodeXml() {
-        return this.restClient
-                .get()
-                .uri("/XML_valFull.asp")
-                .accept(MediaType.APPLICATION_XML)
-                .retrieve()
-                .body(String.class);
+        try {
+            centralBankSemaphore.acquire();
+            return this.restClient
+                    .get()
+                    .uri("/XML_valFull.asp")
+                    .accept(MediaType.APPLICATION_XML)
+                    .retrieve()
+                    .body(String.class);
+        } catch (InterruptedException e) {
+            throw new IllegalStateException(e);
+        } finally {
+            centralBankSemaphore.release();
+        }
     }
 
+    @Override
     @Scheduled(fixedRate = 600000)
     public void updateAllCurrenciesCodeCache() {
         try {

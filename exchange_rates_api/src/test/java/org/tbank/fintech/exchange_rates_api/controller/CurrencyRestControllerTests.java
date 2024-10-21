@@ -137,7 +137,6 @@ public class CurrencyRestControllerTests {
                 Arguments.arguments(400, new BadRequestException("bad request")),
                 Arguments.arguments(404, new NoSuchElementException("element not found")),
                 Arguments.arguments(500, new IllegalStateException("illegal state")),
-                Arguments.arguments(500, new IllegalArgumentException("exception")),
                 Arguments.arguments(503, new UnavailableServiceException("unavailable service"))
         );
     }

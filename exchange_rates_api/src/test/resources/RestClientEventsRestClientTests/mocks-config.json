@@ -1,0 +1,70 @@
+{
+  "mappings" : [
+    {
+      "request": {
+        "method": "GET",
+        "urlPattern": "/public-api/v1.4/events/\\?page=1&page_size=2&fields=id,title,description,location,price,site_url&order_by=price,-favorites_count,-comments_count&text_format=plain&location=kzn&actual_since=1726434000&actual_until=1726693199"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "count": 28,
+          "next": "https://kudago.com/public-api/v1.4/events/?actual_since=1728248400&actual_until=1728853199&fields=id%2Ctitle%2Cdescription%2Clocation%2Cprice%2Csite_url&location=kzn&order_by=price&page=2&page_size=2&text_format=plain",
+          "previous": null,
+          "results": [
+            {
+              "id": 211101,
+              "title": "Выставка «Казанское Поволжье: образы народной культуры»",
+              "description": "Проект предлагает уникальный взгляд на традиции народов, живущих на территории Казанского Поволжья во второй половине XIX — начале XX века.\n",
+              "location": {
+                "slug": "kzn"
+              },
+              "price": "",
+              "site_url": "https://kzn.kudago.com/event/vyistavka-kazanskoe-povolzhe-obrazyi-narodnoj-kulturyi-sentyabr-2024/"
+            },
+            {
+              "id": 133024,
+              "title": "выставка «Места обетованные»",
+              "description": "Посетители выставки познакомятся с двадцатью репродукциями печатных шамаилей из коллекции Фонда Марджани, созданных в начале двадцатого столетия.\n\n",
+              "location": {
+                "slug": "kzn"
+              },
+              "price": "",
+              "site_url": "https://kzn.kudago.com/event/vystavka-mesta-obetovannye/"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPattern": "/public-api/v1.4/events/\\?page=1&page_size=2&fields=id,title,description,location,price,site_url&order_by=price,-favorites_count,-comments_count&text_format=plain&location=randomlocations&actual_since=1726434000&actual_until=1726693199"
+      },
+      "response": {
+        "status": 400
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPattern": "/public-api/v1.4/events/\\?page=1&page_size=2&fields=id,title,description,location,price,site_url&order_by=price,-favorites_count,-comments_count&text_format=plain&location=uganda&actual_since=1726434000&actual_until=1726693199"
+      },
+      "response": {
+        "status": 404
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPattern": "/public-api/v1.4/events/\\?page=1&page_size=2&fields=id,title,description,location,price,site_url&order_by=price,-favorites_count,-comments_count&text_format=plain&location=null&actual_since=1726434000&actual_until=1726693199"
+      },
+      "response": {
+        "status": 503
+      }
+    }
+  ]
+}
