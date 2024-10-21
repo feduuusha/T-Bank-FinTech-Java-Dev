@@ -3,7 +3,7 @@ package org.tbank.fintech.exchange_rates_api.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.tbank.fintech.exchange_rates_api.client.EventsRestClient;
 import org.tbank.fintech.exchange_rates_api.exception.BadRequestException;
 import org.tbank.fintech.exchange_rates_api.exception.UnavailableServiceException;
@@ -21,6 +21,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +32,7 @@ public class EventServiceImpl implements EventService {
     private final EventsRestClient eventsRestClient;
     private final CurrencyService currencyService;
     private final WeeksCalendar weeksCalendar;
+    private final Function<Throwable, List<Event>> eventServiceExceptionHandler;
 
 //    Метод для задания 2 на основе completableFuture
     @Override
@@ -65,21 +67,7 @@ public class EventServiceImpl implements EventService {
                                 .filter((obj) -> obj.price() <= convertedBudget)
                                 .toList())
                 .completeOnTimeout(List.of(), 1, TimeUnit.MINUTES)
-                .exceptionally((exception) -> {
-                    if (exception.getCause() instanceof HttpClientErrorException.BadRequest e) {
-                        throw new BadRequestException(e.getMessage());
-                    } else if (exception.getCause() instanceof BadRequestException e) {
-                        throw e;
-                    } else if (exception.getCause() instanceof HttpClientErrorException.NotFound e) {
-                        throw new NoSuchElementException(e.getMessage());
-                    } else if (exception.getCause() instanceof NoSuchElementException e) {
-                        throw e;
-                    } else if (exception.getCause() instanceof HttpStatusCodeException e) {
-                        throw new UnavailableServiceException(e.getMessage());
-                    } else {
-                        throw new IllegalStateException(exception.getMessage());
-                    }
-                });
+                .exceptionally(eventServiceExceptionHandler);
     }
 
 //    Метод для задания 3 основан на элементах project reactor mono и flux
@@ -119,11 +107,11 @@ public class EventServiceImpl implements EventService {
                         throw new NoSuchElementException(e.getMessage());
                     } else if (throwable instanceof NoSuchElementException e) {
                         throw e;
-                    } else if (throwable instanceof HttpClientErrorException e) {
+                    } else if (throwable instanceof HttpServerErrorException e) {
                         throw new UnavailableServiceException(e.getMessage());
                     } else if (throwable instanceof TimeoutException e) {
                         throw new UnavailableServiceException(e.getMessage());
-                    }else {
+                    } else {
                         throw new IllegalStateException(throwable.getMessage());
                     }
                 });

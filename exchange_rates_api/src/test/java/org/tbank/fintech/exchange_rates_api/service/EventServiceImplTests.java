@@ -12,6 +12,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.tbank.fintech.exchange_rates_api.client.EventsRestClient;
 import org.tbank.fintech.exchange_rates_api.exception.BadRequestException;
+import org.tbank.fintech.exchange_rates_api.exception.EventServiceExceptionHandler;
 import org.tbank.fintech.exchange_rates_api.exception.UnavailableServiceException;
 import org.tbank.fintech.exchange_rates_api.model.Event;
 import org.tbank.fintech.exchange_rates_api.model.response.Conversion;
@@ -32,7 +33,7 @@ import static org.mockito.Mockito.when;
 /**
  * Test class for {@link org.tbank.fintech.exchange_rates_api.service.impl.EventServiceImpl}
  */
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = {EventServiceImpl.class})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = {EventServiceImpl.class, EventServiceExceptionHandler.class})
 public class EventServiceImplTests {
     @Autowired
     private EventService eventService;
