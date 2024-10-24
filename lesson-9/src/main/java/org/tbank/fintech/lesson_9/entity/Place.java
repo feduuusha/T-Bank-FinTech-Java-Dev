@@ -21,7 +21,7 @@ import java.util.Objects;
 @Schema(description = "Object representing the place")
 public class Place {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String slug;
     private Double lat;

@@ -21,7 +21,7 @@ import java.util.Objects;
 @Schema(description = "Object representing the event")
 public class Event {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String name;
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
