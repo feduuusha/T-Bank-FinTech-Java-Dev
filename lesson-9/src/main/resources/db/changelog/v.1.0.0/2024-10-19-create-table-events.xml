@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+
+    <changeSet id="2024-10-19-create-table-events" author="Fyodor Voropaev">
+        <createTable tableName="events">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints unique="true" nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(256)" />
+            <column name="date" type="datetime" />
+            <column name="place_id" type="bigint">
+                <constraints foreignKeyName="events_place_id_id" references="places(id)" deleteCascade="true"/>
+            </column>
+            <column name="description" type="text" />
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
