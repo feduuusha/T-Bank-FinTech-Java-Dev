@@ -1,6 +1,7 @@
 package org.tbank.fintech.service;
 
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -9,9 +10,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.tbank.fintech.entity.Coords;
 import org.tbank.fintech.entity.Location;
+import org.tbank.fintech.entity.memento.LocationMemento;
 import org.tbank.fintech.repository.LocationRepository;
 import org.tbank.fintech.service.impl.LocationServiceImpl;
+import org.tbank.fintech.util.Caretaker;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -29,6 +33,8 @@ public class LocationServiceImplTest {
 
     @Mock
     private LocationRepository locationRepository;
+    @Mock
+    private Caretaker<Long, LocationMemento> locationsCaretaker;
     @InjectMocks
     private LocationServiceImpl locationService;
 
@@ -92,6 +98,8 @@ public class LocationServiceImplTest {
         String timezone = "timezone";
         Coords coords = new Coords(10D,20D);
         String language = "language";
+        Location locationInit = new Location(slug, name, timezone, coords, language);
+        when(locationRepository.save(locationInit)).thenReturn(locationInit);
 
         // Act
         locationService.createLocation(slug, name, timezone, coords, language);
@@ -122,6 +130,7 @@ public class LocationServiceImplTest {
         String expectedTimezone = "new_timezone";
         Coords expectedCoords = new Coords(10D, 20D);
         String expectedLanguage = "new_language";
+        when(locationsCaretaker.get(locationId)).thenReturn(new ArrayList<>());
         when(locationRepository.findById(locationId)).thenReturn(Optional.of(repoLocation));
 
         // Act
@@ -150,5 +159,108 @@ public class LocationServiceImplTest {
 
         // Assert
         verify(locationRepository).deleteById(locationId);
+    }
+
+    @Test
+    @DisplayName("findAllVersionsOfLocationById should return list of location mementos because location with provided id is exist")
+    public void findAllVersionsOfLocationByIdTest() {
+        // Arrange
+        Long locationId = 5L;
+        List<LocationMemento> mementos = List.of(
+                new LocationMemento("slug1", "name1", "timezone1", new Coords(10D, 20D), "language1"),
+                new LocationMemento("slug2", "name2", "timezone2", new Coords(20D, 10D), "language2"),
+                new LocationMemento("slug3", "name3", "timezone3", new Coords(30D, 30D), "language3")
+        );
+        when(locationsCaretaker.get(locationId)).thenReturn(mementos);
+
+        // Act
+        var list = locationService.findAllVersionsOfLocationById(locationId);
+
+        // Assert
+        assertThat(list).isEqualTo(mementos);
+    }
+
+    @Test
+    @DisplayName("findAllVersionsOfLocationById should throw NoSuchElementException because location with provided id is not exist")
+    public void findAllVersionsOfLocationByIdUnSuccessfulTest() {
+        // Arrange
+        Long locationId = 5L;
+        when(locationsCaretaker.get(locationId)).thenReturn(null);
+
+        // Act
+        // Assert
+        assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> locationService.findAllVersionsOfLocationById(locationId))
+                .withMessage("Location with ID: 5 has never existed");
+    }
+
+    @Test
+    @DisplayName("findVersionOfLocationByIndex should return location memento because location with provided id is exist and index is correct")
+    public void findVersionOfLocationByIndexTest() {
+        // Arrange
+        Long locationId = 5L;
+        int versionIndex = 1;
+        List<LocationMemento> mementos = List.of(
+                new LocationMemento("slug1", "name1", "timezone1", new Coords(10D, 20D), "language1"),
+                new LocationMemento("slug2", "name2", "timezone2", new Coords(20D, 10D), "language2"),
+                new LocationMemento("slug3", "name3", "timezone3", new Coords(30D, 30D), "language3")
+        );
+        when(locationsCaretaker.get(locationId)).thenReturn(mementos);
+
+        // Act
+        var memento = locationService.findVersionOfLocationByIndex(locationId, versionIndex);
+
+        // Assert
+        assertThat(memento).isEqualTo(mementos.get(versionIndex));
+    }
+
+    @Test
+    @DisplayName("findVersionOfLocationByIndex should throw NoSuchElementException because index is incorrect")
+    public void findVersionOfLocationByIndexUnSuccessfulTest() {
+        // Arrange
+        Long locationId = 5L;
+        Integer versionIndex = 5;
+        List<LocationMemento> mementos = List.of(
+                new LocationMemento("slug1", "name1", "timezone1", new Coords(10D, 20D), "language1"),
+                new LocationMemento("slug2", "name2", "timezone2", new Coords(20D, 10D), "language2"),
+                new LocationMemento("slug3", "name3", "timezone3", new Coords(30D, 30D), "language3")
+        );
+        when(locationsCaretaker.get(locationId)).thenReturn(mementos);
+
+        // Act
+        // Assert
+        assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> locationService.findVersionOfLocationByIndex(locationId, versionIndex))
+                .withMessage("Location version with index " + versionIndex + " not found");
+    }
+
+    @Test
+    @DisplayName("restoreVersionOfLocation should restore location by index of memento")
+    public void restoreVersionOfLocationTest() {
+        // Arrange
+        Long locationId = 5L;
+        int versionIndex = 2;
+        List<LocationMemento> mementos = new ArrayList<>();
+        mementos.add(new LocationMemento("slug1", "name1", "timezone1", new Coords(10D, 20D), "language1"));
+        mementos.add(new LocationMemento("slug2", "name2", "timezone2", new Coords(20D, 10D), "language2"));
+        mementos.add(new LocationMemento("slug3", "name3", "timezone3", new Coords(30D, 30D), "language3"));
+
+        when(locationsCaretaker.get(locationId)).thenReturn(mementos);
+        Location location = new Location(locationId, "slug", "name", "timezone", new Coords(50D, 50D), "language");
+        when(locationRepository.findById(locationId)).thenReturn(Optional.of(location));
+
+        // Act
+        Location locationResult = locationService.restoreVersionOfLocation(locationId, versionIndex);
+
+        // Assert
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(locationResult.getSlug()).isEqualTo(mementos.get(versionIndex).slug());
+        softly.assertThat(locationResult.getName()).isEqualTo(mementos.get(versionIndex).name());
+        softly.assertThat(locationResult.getTimezone()).isEqualTo(mementos.get(versionIndex).timezone());
+        softly.assertThat(locationResult.getCoords()).isEqualTo(mementos.get(versionIndex).coords());
+        softly.assertThat(locationResult.getLanguage()).isEqualTo(mementos.get(versionIndex).language());
+
+        softly.assertAll();
     }
 }

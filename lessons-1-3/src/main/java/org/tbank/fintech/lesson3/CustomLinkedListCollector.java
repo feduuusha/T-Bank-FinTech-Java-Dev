@@ -29,7 +29,7 @@ public class CustomLinkedListCollector<T> implements Collector<T, CustomLinkedLi
 
     @Override
     public Function<CustomLinkedList<T>, CustomLinkedList<T>> finisher() {
-        return (customLinkedList -> customLinkedList);
+        return Function.identity();
     }
 
     @Override

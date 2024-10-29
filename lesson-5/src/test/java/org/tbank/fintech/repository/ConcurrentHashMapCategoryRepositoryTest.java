@@ -102,23 +102,4 @@ class ConcurrentHashMapCategoryRepositoryTest {
         assertThat(hashMapCategoryRepository.findById(1L).isPresent()).as("Expected category to be deleted").isFalse();
     }
 
-    @Test
-    @DisplayName("initializeByListOfCategories should initialize the repository with a list of categories")
-    void testInitializeByListOfCategories() {
-        // given
-        Category category1 = new Category(1L, "Category 1", "Description 1");
-        Category category2 = new Category(2L, "Category 2", "Description 2");
-        List<Category> categories = List.of(category1, category2);
-
-        // when
-        hashMapCategoryRepository.initializeByListOfCategories(categories);
-
-        // then
-        SoftAssertions softly = new SoftAssertions();
-        softly.assertThat(hashMapCategoryRepository.findById(1L).isPresent()).isTrue();
-        softly.assertThat(hashMapCategoryRepository.findById(2L).isPresent()).isTrue();
-        softly.assertThat(hashMapCategoryRepository.findAll().size()).as(() -> "Expected 2 categories, but got " + hashMapCategoryRepository.findAll().size()).isEqualTo(2);
-
-        softly.assertAll();
-    }
 }

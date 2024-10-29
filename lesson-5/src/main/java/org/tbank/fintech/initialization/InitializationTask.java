@@ -7,8 +7,8 @@ import org.tbank.fintech.clients.CategoriesRestClient;
 import org.tbank.fintech.clients.LocationsRestClient;
 import org.tbank.fintech.entity.Category;
 import org.tbank.fintech.entity.Location;
-import org.tbank.fintech.repository.CategoryRepository;
-import org.tbank.fintech.repository.LocationRepository;
+import org.tbank.fintech.service.CategoryService;
+import org.tbank.fintech.service.LocationService;
 
 import java.util.HashSet;
 import java.util.List;
@@ -22,26 +22,34 @@ public class InitializationTask implements Runnable {
     private final ExecutorService initExecutorService;
     private final CategoriesRestClient categoriesRestClient;
     private final LocationsRestClient locationsRestClient;
-    private final CategoryRepository categoryRepository;
-    private final LocationRepository locationRepository;
+    private final CategoryService categoryService;
+    private final LocationService locationService;
 
     @Override
     public void run() {
         log.debug("Calling the InitializationTask.run() method");
         Callable<Void> categoriesInitTask = () -> {
             List<Category> categories = categoriesRestClient.findAllCategories("ru", "slug", List.of("id", "slug", "name"));
-            categoryRepository.initializeByListOfCategories(categories);
+            HashSet<String> slugs = new HashSet<>();
+            for (Category category : categoryService.findAllCategories()) {
+                slugs.add(category.getSlug());
+            }
+            for (Category category : categories) {
+                if (!slugs.contains(category.getSlug())) {
+                    categoryService.createCategory(category.getSlug(), category.getName());
+                }
+            }
             return null;
         };
         Callable<Void> locationsInitTask = () -> {
             List<Location> locations = locationsRestClient.findAllLocations("ru", "slug", List.of("slug", "name", "timezone", "coords", "language"));
             HashSet<String> slugs = new HashSet<>();
-            for (Location location : locationRepository.findAll()) {
+            for (Location location : locationService.findAllLocations()) {
                 slugs.add(location.getSlug());
             }
             for (Location location : locations) {
                 if (!slugs.contains(location.getSlug())) {
-                    locationRepository.save(location);
+                    locationService.createLocation(location.getSlug(), location.getName(), location.getTimezone(), location.getCoords(), location.getLanguage());
                 }
             }
             return null;

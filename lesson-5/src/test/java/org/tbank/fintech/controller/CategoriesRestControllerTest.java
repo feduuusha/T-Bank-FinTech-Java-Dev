@@ -8,6 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.tbank.fintech.entity.Category;
+import org.tbank.fintech.entity.memento.CategoryMemento;
 import org.tbank.fintech.service.CategoryService;
 
 import java.util.List;
@@ -109,5 +110,59 @@ public class CategoriesRestControllerTest {
         // then
         mockMvc.perform(put("/api/v1/places/categories/{categoryId}", categoryId).content(payload).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("Method: GET Endpoint:/api/v1/places/categories/{categoryId}/versions should return list of mementos because category with location id is exist")
+    public void findAllVersionsOfCategoryTest() throws Exception {
+        // Arrange
+        Long categoryId = 5L;
+        List<CategoryMemento> mementos = List.of(
+                new CategoryMemento("slug1", "name1"),
+                new CategoryMemento("slug2", "name2"),
+                new CategoryMemento("slug3", "name3")
+        );
+        when(categoryService.findAllVersionsOfCategoryById(categoryId)).thenReturn(mementos);
+
+        // Act
+        // Assert
+        mockMvc.perform(get("/api/v1/places/categories/{categoryId}/versions", categoryId))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("[{\"slug\":\"slug1\",\"name\":\"name1\"},{\"slug\":\"slug2\",\"name\":\"name2\"},{\"slug\":\"slug3\",\"name\":\"name3\"}]"));
+    }
+
+    @Test
+    @DisplayName("Method: GET Endpoint:/api/v1/places/categories/{categoryID}/versions/{versionIndex} should return memento because category with provided id is exist and memento with provided index exist")
+    public void findVersionOfCategoryByIndexTest() throws Exception {
+        // Arrange
+        Long categoryId = 5L;
+        Integer versionIndex = 1;
+        var memento = new CategoryMemento("slug2", "name2");
+        when(categoryService.findVersionOfCategoryByIndex(categoryId, versionIndex)).thenReturn(memento);
+
+        // Act
+        // Assert
+        mockMvc.perform(get("/api/v1/places/categories/{categoryId}/versions/{versionIndex}", categoryId, versionIndex))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"slug\":\"slug2\",\"name\":\"name2\"}"));
+    }
+
+    @Test
+    @DisplayName("Method: POST Endpoint:/api/v1/places/categories/{categoryId}/restore/{versionIndex} should restore categoryMemento with provided index in category with provided id and return category")
+    public void restoreVersionOfLocationTest() throws Exception {
+        // Arrange
+        Long categoryId = 5L;
+        Integer versionIndex = 1;
+        var restoredCategory = new Category("slug2", "name2");
+        when(categoryService.restoreVersionOfCategory(categoryId, versionIndex)).thenReturn(restoredCategory);
+
+        // Act
+        // Assert
+        mockMvc.perform(post("/api/v1/places/categories/{categoryId}/restore/{versionIndex}", categoryId, versionIndex))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"slug\":\"slug2\",\"name\":\"name2\"}"));
     }
 }

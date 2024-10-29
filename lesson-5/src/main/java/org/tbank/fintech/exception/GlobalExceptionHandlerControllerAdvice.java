@@ -24,7 +24,7 @@ public class GlobalExceptionHandlerControllerAdvice {
         return ResponseEntity.of(problemDetail).build();
     }
 
-    @ExceptionHandler({Exception.class})
+    @ExceptionHandler({IllegalStateException.class, IllegalArgumentException.class})
     public ResponseEntity<?> handleOtherExceptions(Exception exception) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
         return ResponseEntity.of(problemDetail).build();
