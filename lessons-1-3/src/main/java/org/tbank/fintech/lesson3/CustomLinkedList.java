@@ -2,7 +2,7 @@ package org.tbank.fintech.lesson3;
 
 import java.util.Collection;
 
-public interface CustomLinkedList<E> {
+public interface CustomLinkedList<E> extends Iterable<E>{
     boolean add(E element);
     E get(int index);
     E remove(int index);

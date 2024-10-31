@@ -1,12 +1,17 @@
 package org.tbank.fintech.lesson3;
 
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 
 public class CustomLinkedListImpl<E> implements CustomLinkedList<E> {
 
     private Node<E> head;
     private Node<E> tail;
     private int size;
+    private int countOfModification = 0;
 
     @Override
     public boolean add(E element) {
@@ -19,6 +24,7 @@ public class CustomLinkedListImpl<E> implements CustomLinkedList<E> {
             this.tail = newNode;
         }
         ++size;
+        ++countOfModification;
         return true;
     }
 
@@ -66,6 +72,7 @@ public class CustomLinkedListImpl<E> implements CustomLinkedList<E> {
         }
         curr.val = null;
         --size;
+        ++countOfModification;
         return value;
     }
 
@@ -97,6 +104,7 @@ public class CustomLinkedListImpl<E> implements CustomLinkedList<E> {
             for (E elem : c) {
                 this.add(elem);
             }
+            ++countOfModification;
             return true;
         }
     }
@@ -110,6 +118,7 @@ public class CustomLinkedListImpl<E> implements CustomLinkedList<E> {
             for (int i = 0; i < c.size(); ++i) {
                 this.add(c.get(i));
             }
+            ++countOfModification;
             return true;
         }
     }
@@ -136,6 +145,41 @@ public class CustomLinkedListImpl<E> implements CustomLinkedList<E> {
         }
         output.append("]");
         return output.toString();
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return new CustomIterator();
+    }
+
+    private class CustomIterator implements Iterator<E> {
+        private Node<E> current = head;
+        private final int iteratorCountOfModification = countOfModification;
+
+        @Override
+        public boolean hasNext() {
+            return current != null;
+        }
+
+        @Override
+        public E next() {
+            checkForModification();
+            if (!hasNext())
+                throw new NoSuchElementException("All elements already iterated");
+            var ans = current.val;
+            current = current.next;
+            return ans;
+        }
+
+        @Override
+        public void forEachRemaining(Consumer<? super E> action) {
+            Iterator.super.forEachRemaining(action);
+        }
+
+        final void checkForModification() {
+            if (iteratorCountOfModification != countOfModification)
+                throw new ConcurrentModificationException("Do not change list when iterating over it");
+        }
     }
 
     private static class Node<E> {

@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.tbank.fintech.entity.Coords;
 import org.tbank.fintech.entity.Location;
+import org.tbank.fintech.entity.memento.LocationMemento;
 import org.tbank.fintech.service.LocationService;
 
 import java.util.List;
@@ -123,5 +124,59 @@ public class LocationsRestControllerTest {
         // then
         mockMvc.perform(put("/api/v1/locations/{locationId}", locationId).content(payload).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("Method: GET Endpoint:/api/v1/locations/{locationId}/versions should return list of mementos because location with location id is exist")
+    public void findAllVersionsOfLocationTest() throws Exception {
+        // Arrange
+        Long locationId = 5L;
+        List<LocationMemento> mementos = List.of(
+                new LocationMemento("slug1", "name1", "timezone1", new Coords(40D, 50D), "language1"),
+                new LocationMemento("slug2", "name2", "timezone2", new Coords(50D, 60D), "language2"),
+                new LocationMemento("slug3", "name3", "timezone3", new Coords(60D, 70D), "language3")
+        );
+        when(locationService.findAllVersionsOfLocationById(locationId)).thenReturn(mementos);
+
+        // Act
+        // Assert
+        mockMvc.perform(get("/api/v1/locations/{locationId}/versions", locationId))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("[{\"slug\":\"slug1\",\"name\":\"name1\",\"timezone\":\"timezone1\",\"coords\":{\"lat\":40.0,\"lon\":50.0},\"language\":\"language1\"},{\"slug\":\"slug2\",\"name\":\"name2\",\"timezone\":\"timezone2\",\"coords\":{\"lat\":50.0,\"lon\":60.0},\"language\":\"language2\"},{\"slug\":\"slug3\",\"name\":\"name3\",\"timezone\":\"timezone3\",\"coords\":{\"lat\":60.0,\"lon\":70.0},\"language\":\"language3\"}]"));
+    }
+
+    @Test
+    @DisplayName("Method: GET Endpoint:/api/v1/locations/{locationId}/versions/{versionIndex} should return memento because location with provided id is exist and memento with provided index exist")
+    public void findVersionOfLocationByIndexTest() throws Exception {
+        // Arrange
+        Long locationId = 5L;
+        Integer versionIndex = 1;
+        var memento = new LocationMemento("slug2", "name2", "timezone2", new Coords(50D, 60D), "language2");
+        when(locationService.findVersionOfLocationByIndex(locationId, versionIndex)).thenReturn(memento);
+
+        // Act
+        // Assert
+        mockMvc.perform(get("/api/v1/locations/{locationId}/versions/{versionIndex}", locationId, versionIndex))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"slug\":\"slug2\",\"name\":\"name2\",\"timezone\":\"timezone2\",\"coords\":{\"lat\":50.0,\"lon\":60.0},\"language\":\"language2\"}"));
+    }
+
+    @Test
+    @DisplayName("Method: POST Endpoint:/api/v1/locations/{locationId}/restore/{versionIndex} should restore locationMemento with provided index in location with provided id and return location")
+    public void restoreVersionOfLocationTest() throws Exception {
+        // Arrange
+        Long locationId = 5L;
+        Integer versionIndex = 1;
+        var restoredLocation = new Location("slug2", "name2", "timezone2", new Coords(50D, 60D), "language2");
+        when(locationService.restoreVersionOfLocation(locationId, versionIndex)).thenReturn(restoredLocation);
+
+        // Act
+        // Assert
+        mockMvc.perform(post("/api/v1/locations/{locationId}/restore/{versionIndex}", locationId, versionIndex))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"slug\":\"slug2\",\"name\":\"name2\",\"timezone\":\"timezone2\",\"coords\":{\"lat\":50.0,\"lon\":60.0},\"language\":\"language2\"}"));
     }
 }

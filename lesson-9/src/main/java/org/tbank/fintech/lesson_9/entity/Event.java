@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
+import org.tbank.fintech.lesson_9.listener.LoggingEntityListener;
+import org.tbank.fintech.lesson_9.listener.StatisticEntityListener;
+import org.tbank.fintech.lesson_9.listener.EventValidationEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -18,10 +21,12 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@EntityListeners({LoggingEntityListener.class, StatisticEntityListener.class, EventValidationEntityListener.class})
 @Schema(description = "Object representing the event")
 public class Event {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "events_seq")
+    @SequenceGenerator(name = "events_seq", sequenceName = "events_seq", allocationSize = 1)
     private Long id;
     private String name;
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm")

@@ -12,8 +12,8 @@ import org.tbank.fintech.config.ExecutorServiceBeans;
 import org.tbank.fintech.entity.Category;
 import org.tbank.fintech.entity.Coords;
 import org.tbank.fintech.entity.Location;
-import org.tbank.fintech.repository.CategoryRepository;
-import org.tbank.fintech.repository.LocationRepository;
+import org.tbank.fintech.service.CategoryService;
+import org.tbank.fintech.service.LocationService;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -36,9 +36,9 @@ public class InitializationTaskTests {
     @MockBean
     private LocationsRestClient locationsRestClient;
     @MockBean
-    private CategoryRepository categoryRepository;
+    private CategoryService categoryService;
     @MockBean
-    private LocationRepository locationRepository;
+    private LocationService locationService;
 
     @Test
     @DisplayName("Initialization task should call the client's methods and write data to the repository")
@@ -60,16 +60,16 @@ public class InitializationTaskTests {
                 .thenReturn(locations);
         when(categoriesRestClient.findAllCategories("ru", "slug", List.of("id", "slug", "name")))
                 .thenReturn(categories);
-        when(locationRepository.findAll()).thenReturn(List.of(new Location("slug", "name", "timezone", new Coords(), "ru")));
+        when(locationService.findAllLocations()).thenReturn(List.of(new Location("slug", "name", "timezone", new Coords(), "ru")));
+        when(categoryService.findAllCategories()).thenReturn(List.of());
 
         // Act
         initializationTask.run();
 
         // Assert
-        verify(categoryRepository).initializeByListOfCategories(categories);
         for (var location : locations) {
             if (!location.getSlug().equals("slug"))
-                verify(locationRepository).save(location);
+                verify(locationService).createLocation(location.getSlug(), location.getName(), location.getTimezone(), location.getCoords(), location.getLanguage());
         }
         verify(initExecutorService).invokeAll(anyCollection(), eq(1L), eq(TimeUnit.MINUTES));
 

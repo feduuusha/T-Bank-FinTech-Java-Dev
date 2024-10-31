@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
+import org.tbank.fintech.lesson_9.listener.LoggingEntityListener;
+import org.tbank.fintech.lesson_9.listener.PlaceValidationEntityListener;
+import org.tbank.fintech.lesson_9.listener.StatisticEntityListener;
 
 import java.util.List;
 import java.util.Objects;
@@ -18,10 +21,12 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners({LoggingEntityListener.class, StatisticEntityListener.class, PlaceValidationEntityListener.class})
 @Schema(description = "Object representing the place")
 public class Place {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "places_seq")
+    @SequenceGenerator(name = "places_seq", sequenceName = "places_seq", allocationSize = 1)
     private Long id;
     private String slug;
     private Double lat;

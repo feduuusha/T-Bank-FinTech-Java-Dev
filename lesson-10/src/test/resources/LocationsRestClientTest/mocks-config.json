@@ -1,0 +1,48 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "urlPattern": "/public-api/v1.4/locations/\\?lang=([a-z]+)&order_by=([a-z]+)&fields=([a-z,]+)"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": [
+          {
+            "slug": "ekb",
+            "name": "Екатеринбург",
+            "timezone": "Asia/Yekaterinburg",
+            "coords": {
+              "lat": 56.838606999999996,
+              "lon": 60.60551400000001
+            },
+            "language": "ru"
+          },
+          {
+            "slug": "kzn",
+            "name": "Казань",
+            "timezone": "GMT+03:00",
+            "coords": {
+              "lat": 55.795792999999975,
+              "lon": 49.106584999999995
+            },
+            "language": "ru"
+          },
+          {
+            "slug": "msk",
+            "name": "Москва",
+            "timezone": "GMT+03:00",
+            "coords": {
+              "lat": 55.753676,
+              "lon": 37.61989899999998
+            },
+            "language": "ru"
+          }
+        ]
+      }
+    }
+  ]
+}
