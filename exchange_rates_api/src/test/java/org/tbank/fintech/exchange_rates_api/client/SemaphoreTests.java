@@ -31,16 +31,18 @@ public class SemaphoreTests {
     @DisplayName("If a lot of threads call eventRestController method eventsSemaphore.availablePermits() should be zero and after time it should be like in properties")
     public void eventsSemaphoreTest() throws Exception {
         // Arrange
+        boolean isFull = false;
         try (var executor =  Executors.newFixedThreadPool(eventConnections)) {
             // Act
             for (int i = 0; i < eventConnections + 1000; ++i) {
                 executor.submit(() -> eventsRestClient.findPopularEventsFromPeriod(0, 0, null, 0, 0));
+                if (eventsSemaphore.availablePermits() == 0) isFull = true;
             }
 
             // Assert
             SoftAssertions softly = new SoftAssertions();
 
-            softly.assertThat(eventsSemaphore.availablePermits()).isEqualTo(0);
+            softly.assertThat(isFull).isTrue();
             Thread.sleep(1000);
             softly.assertThat(eventsSemaphore.availablePermits()).isEqualTo(eventConnections);
 

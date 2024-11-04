@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+
+    <changeSet id="2024-11-02-insert-base-authorities" author="Fyodor Voropaev">
+        <insert tableName="authorities">
+            <column name="id">1</column>
+            <column name="name">create_event</column>
+        </insert>
+        <insert tableName="authorities">
+            <column name="id">2</column>
+            <column name="name">update_event</column>
+        </insert>
+        <insert tableName="authorities">
+            <column name="id">3</column>
+            <column name="name">remove_event</column>
+        </insert>
+        <insert tableName="authorities">
+            <column name="id">4</column>
+            <column name="name">read_event</column>
+        </insert>
+        <insert tableName="authorities">
+            <column name="id">5</column>
+            <column name="name">create_place</column>
+        </insert>
+        <insert tableName="authorities">
+            <column name="id">6</column>
+            <column name="name">update_place</column>
+        </insert>
+        <insert tableName="authorities">
+            <column name="id">7</column>
+            <column name="name">remove_place</column>
+        </insert>
+        <insert tableName="authorities">
+            <column name="id">8</column>
+            <column name="name">read_place</column>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

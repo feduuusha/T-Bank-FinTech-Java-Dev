@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+
+    <changeSet id="add-tag-2.0.0" author="Fyodor Voropaev">
+        <tagDatabase tag="v.2.0.0"/>
+    </changeSet>
+
+    <include file="2024-11-01-create-roles-seq.xml" relativeToChangelogFile="true"/>
+    <include file="2024-11-01-create-authorities-seq.xml" relativeToChangelogFile="true"/>
+    <include file="2024-11-01-create-users-seq.xml" relativeToChangelogFile="true"/>
+    <include file="2024-11-01-create-table-authorities.xml" relativeToChangelogFile="true"/>
+    <include file="2024-11-01-create-table-roles.xml" relativeToChangelogFile="true"/>
+    <include file="2024-11-01-create-roles-authorities-table.xml" relativeToChangelogFile="true"/>
+    <include file="2024-11-01-create-table-users.xml" relativeToChangelogFile="true"/>
+    <include file="2024-11-01-create-index-username.xml" relativeToChangelogFile="true"/>
+    <include file="2024-11-01-create-index-email.xml" relativeToChangelogFile="true"/>
+    <include file="2024-11-01-create-users-roles-table.xml" relativeToChangelogFile="true"/>
+    <include file="2024-11-01-create-users-authorities-table.xml" relativeToChangelogFile="true"/>
+
+</databaseChangeLog>

@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +32,7 @@ public class PlaceRestController {
 
     @Operation(description = "Find all places.",
             responses = @ApiResponse(responseCode = "200", description = "Correct response list of Event objects" ,content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Place.class))))
+    @PreAuthorize("hasAuthority('read_place')")
     @GetMapping
     public List<Place> findAllPlaces() {
         return this.placeService.findAllPlaces();
@@ -40,6 +42,7 @@ public class PlaceRestController {
             responses = {
                     @ApiResponse(responseCode = "201", description = "Correct response created Place object" ,content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Place.class))),
                     @ApiResponse(responseCode = "400", description = "Returning when request params is incorrect or request body is incorrect",content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class)))})
+    @PreAuthorize("hasAuthority('create_place')")
     @PostMapping
     public ResponseEntity<?> createPlace(@Valid @RequestBody NewPlacePayload payload,
                                       BindingResult bindingResult,
@@ -61,6 +64,7 @@ public class PlaceRestController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Correct response Place objects" ,content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Place.class))),
                     @ApiResponse(responseCode = "404", description = "Returning when place with specified id is not exist",content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class)))})
+    @PreAuthorize("hasAuthority('read_place')")
     @GetMapping("/{placeId:\\d+}")
     public Place findPlaceById(@PathVariable Long placeId) {
         return this.placeService.findPlaceById(placeId);
@@ -71,6 +75,7 @@ public class PlaceRestController {
                     @ApiResponse(responseCode = "204", description = "Correct response, object is updated"),
                     @ApiResponse(responseCode = "400", description = "Returning when request params is incorrect or request body is incorrect",content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class))),
                     @ApiResponse(responseCode = "404", description = "Returning when place with specified id is not exist",content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class)))})
+    @PreAuthorize("hasAuthority('update_place')")
     @PutMapping("/{placeId:\\d+}")
     public ResponseEntity<Void> updatePlaceById(@PathVariable Long placeId,
                                                 @Valid @RequestBody UpdatePlacePayload payload,
@@ -87,6 +92,7 @@ public class PlaceRestController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Correct response object is deleted"),
                     @ApiResponse(responseCode = "404", description = "Returning when place with specified id is not exist",content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class)))})
+    @PreAuthorize("hasAuthority('remove_place')")
     @DeleteMapping("/{placeId:\\d+}")
     public ResponseEntity<Void> deletePlaceById(@PathVariable Long placeId) {
         this.placeService.deletePlaceById(placeId);

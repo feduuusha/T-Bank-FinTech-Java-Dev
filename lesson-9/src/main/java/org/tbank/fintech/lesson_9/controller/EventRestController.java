@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +36,7 @@ public class EventRestController {
     responses = {
             @ApiResponse(responseCode = "200", description = "Correct response list of Event objects" ,content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Event.class))),
             @ApiResponse(responseCode = "400", description = "Returning when request params is incorrect",content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class)))})
+    @PreAuthorize("hasAuthority('read_event')")
     @GetMapping
     public List<Event> findAllEventsByFilter(@RequestParam(name = "name", required = false) String eventName,
                                              @RequestParam(name = "place", required = false) String placeName,
@@ -47,6 +49,7 @@ public class EventRestController {
             responses = {
                     @ApiResponse(responseCode = "201", description = "Correct response created Event object" ,content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Event.class))),
                     @ApiResponse(responseCode = "400", description = "Returning when request params is incorrect or request body is incorrect",content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class)))})
+    @PreAuthorize("hasAuthority('create_event')")
     @PostMapping
     public ResponseEntity<?> createEvent(@Valid @RequestBody NewEventPayload payload,
                                       BindingResult bindingResult,
@@ -67,6 +70,7 @@ public class EventRestController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Correct response Event objects" ,content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Event.class))),
                     @ApiResponse(responseCode = "404", description = "Returning when event with specified id is not exist",content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class)))})
+    @PreAuthorize("hasAuthority('read_event')")
     @GetMapping("/{eventId:\\d+}")
     public Event findEventById(@PathVariable Long eventId) {
         return this.eventService.findEventById(eventId);
@@ -78,6 +82,7 @@ public class EventRestController {
                     @ApiResponse(responseCode = "204", description = "Correct response, object is updated"),
                     @ApiResponse(responseCode = "400", description = "Returning when request params is incorrect or request body is incorrect",content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class))),
                     @ApiResponse(responseCode = "404", description = "Returning when event with specified id is not exist",content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class)))})
+    @PreAuthorize("hasAuthority('update_event')")
     @PutMapping("/{eventId:\\d+}")
     public ResponseEntity<Void> updateEventById(@PathVariable Long eventId,
                                                   @Valid @RequestBody UpdateEventPayload payload,
@@ -94,6 +99,7 @@ public class EventRestController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Correct response object is deleted"),
                     @ApiResponse(responseCode = "404", description = "Returning when event with specified id is not exist",content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionMessage.class)))})
+    @PreAuthorize("hasAuthority('remove_event')")
     @DeleteMapping("/{eventId:\\d+}")
     public ResponseEntity<Void> deleteEventById(@PathVariable Long eventId) {
         this.eventService.deleteEventById(eventId);

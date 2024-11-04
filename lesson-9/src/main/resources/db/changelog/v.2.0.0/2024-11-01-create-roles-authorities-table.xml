@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+    <changeSet author="Fyodor Voropaev" id="2024-11-01-create-roles-authorities-table">
+        <createTable tableName="roles_authorities">
+            <column name="role_id" type="bigint">
+                <constraints nullable="false" primaryKey="true" foreignKeyName="fk_roles_authorities_roles" referencedColumnNames="id" referencedTableName="roles" deleteCascade="true"/>
+            </column>
+            <column name="authority_id" type="bigint">
+                <constraints nullable="false" primaryKey="true" foreignKeyName="fk_roles_authorities_authorities" referencedColumnNames="id" referencedTableName="authorities" deleteCascade="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
