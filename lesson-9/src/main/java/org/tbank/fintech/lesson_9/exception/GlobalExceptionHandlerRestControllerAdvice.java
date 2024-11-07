@@ -1,5 +1,6 @@
 package org.tbank.fintech.lesson_9.exception;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ValidationException;
@@ -16,7 +17,7 @@ import java.util.NoSuchElementException;
 @RestControllerAdvice
 public class GlobalExceptionHandlerRestControllerAdvice {
 
-    @ExceptionHandler({BindException.class, EntityNotFoundException.class, ValidationException.class})
+    @ExceptionHandler({BindException.class, EntityNotFoundException.class, ValidationException.class, EntityExistsException.class})
     public ResponseEntity<?> handleBindException(HttpServletRequest req, Exception e) {
         return ResponseEntity.badRequest().body(new ExceptionMessage(Timestamp.from(Instant.now()), 400, e.getMessage(), req.getRequestURI()));
     }

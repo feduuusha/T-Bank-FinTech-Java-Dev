@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -63,6 +64,7 @@ public class EventsE2ETests {
 
     @Test
     @DisplayName("Method: GET, Endpoint: /api/v1/events should return all events from db")
+    @WithMockUser(authorities = {"read_event"})
     public void findAllEventsTest() throws Exception {
         // Arrange
         Place place = new Place(null, "place", 50D, 60D, "name1", "timezone1", "ru1", null);
@@ -84,6 +86,7 @@ public class EventsE2ETests {
 
     @Test
     @DisplayName("Method: GET, Endpoint: /api/v1/events?dateFrom&dateTo&name&place should return events from db by filter")
+    @WithMockUser(authorities = {"read_event"})
     public void findAllEventsByFilterTest() throws Exception {
         // Arrange
         Place place = new Place(null, "place", 50D, 60D, "name1", "timezone1", "ru1", null);
@@ -110,6 +113,7 @@ public class EventsE2ETests {
 
     @Test
     @DisplayName("Method: POST, Endpoint: /api/v1/events should save event in db")
+    @WithMockUser(authorities = {"create_event"})
     public void createEventTest() throws Exception {
         // Arrange
         Place place = new Place(null, "place", 50D, 60D, "name1", "timezone1", "ru1", null);
@@ -143,6 +147,7 @@ public class EventsE2ETests {
 
     @Test
     @DisplayName("Method: POST, Endpoint: /api/v1/events should throw 400 status, because body is incorrect (placeId is not provided)")
+    @WithMockUser(authorities = {"create_event"})
     public void createEventUnSuccessfulTest() throws Exception {
         // Arrange
         String eventName = "name";
@@ -174,6 +179,7 @@ public class EventsE2ETests {
 
     @Test
     @DisplayName("Method: GET, Endpoint: /api/v1/events/{eventId} should return event with specified id")
+    @WithMockUser(authorities = {"read_event"})
     public void findEventByIdTest() throws Exception {
         // Arrange
         Place place = new Place(null, "place", 50D, 60D, "name1", "timezone1", "ru1", null);
@@ -192,6 +198,7 @@ public class EventsE2ETests {
 
     @Test
     @DisplayName("Method: GET, Endpoint: /api/v1/events/{eventId} should throw 404 because id is do not exist")
+    @WithMockUser(authorities = {"read_event"})
     public void findEventByIdUnSuccessfulTest() throws Exception {
         // Arrange
         Long eventId = 1000L;
@@ -214,6 +221,7 @@ public class EventsE2ETests {
 
     @Test
     @DisplayName("Method: PUT, Endpoint: /api/v1/events/{eventId} should update event in db")
+    @WithMockUser(authorities = {"update_event"})
     public void updateEventByIdTest() throws Exception {
         // Arrange
         Place place = new Place(null, "place", 50D, 60D, "name1", "timezone1", "ru1", null);
@@ -244,6 +252,7 @@ public class EventsE2ETests {
 
     @Test
     @DisplayName("Method: PUT, Endpoint: /api/v1/events/{eventId} should throw 404, because place in request body don t exist")
+    @WithMockUser(authorities = {"update_event"})
     public void updateEventByIdUnSuccessful400Test() throws Exception {
         // Arrange
         Place place = new Place(null, "place", 50D, 60D, "name1", "timezone1", "ru1", null);
@@ -279,6 +288,7 @@ public class EventsE2ETests {
 
     @Test
     @DisplayName("Method: PUT, Endpoint: /api/v1/events/{eventId} should throw 400 status, because body is incorrect (placeId is not provided)")
+    @WithMockUser(authorities = {"update_event"})
     public void updateEventByIdUnSuccessfulTest() throws Exception {
         // Arrange
         String newEventName = "newEventName";
@@ -309,6 +319,7 @@ public class EventsE2ETests {
 
     @Test
     @DisplayName("Method: DELETE, Endpoint: /api/v1/events/{eventId} should delete event in db")
+    @WithMockUser(authorities = {"remove_event"})
     public void deleteEventByIdTest() throws Exception {
         // Arrange
         Place place = new Place(null, "place", 50D, 60D, "name1", "timezone1", "ru1", null);
@@ -322,5 +333,49 @@ public class EventsE2ETests {
 
         // Assert
         assertThat(eventRepository.findById(event.getId())).isEmpty();
+    }
+
+    @Test
+    @DisplayName("Method: GET, Endpoint: /api/v1/events/{eventId} should return 403 because user do not have authority read_event")
+    @WithMockUser
+    public void findEventByIdUnAuthorizedTest() throws Exception {
+        // Arrange
+        // Act
+        // Assert
+        mockMvc.perform(get("/api/v1/events/1"))
+                .andExpect(status().is(403));
+    }
+
+    @Test
+    @DisplayName("Method: POST, Endpoint: /api/v1/events should return 403 because user do not have authority create_event")
+    @WithMockUser
+    public void createEventUnAuthorizedTest() throws Exception {
+        // Arrange
+        // Act
+        // Assert
+        mockMvc.perform(post("/api/v1/events").content("{}").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(403));
+    }
+
+    @Test
+    @DisplayName("Method: PUT, Endpoint: /api/v1/events/{eventId} should return 403 because user do not have authority update_event")
+    @WithMockUser
+    public void updateEventByIdUnAuthorizedTest() throws Exception {
+        // Arrange
+        // Act
+        // Assert
+        mockMvc.perform(put("/api/v1/events/5").content("{}").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(403));
+    }
+
+    @Test
+    @DisplayName("Method: DELETE, Endpoint: /api/v1/events/{eventId} should return 403 because user do not have authority remove_event")
+    @WithMockUser
+    public void deleteEventByIdUnAuthorizedTest() throws Exception {
+        // Arrange
+        // Act
+        // Assert
+        mockMvc.perform(delete("/api/v1/events/5"))
+                .andExpect(status().is(403));
     }
 }

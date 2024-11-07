@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -56,6 +57,7 @@ public class PlacesE2ETests {
 
     @Test
     @DisplayName("Method: GET, Endpoint: /api/v1/places should return all places from db")
+    @WithMockUser(authorities = {"read_place"})
     public void findAllPlacesTest() throws Exception {
         // Arrange
         List<Place> placesInRepo = List.of(
@@ -75,6 +77,7 @@ public class PlacesE2ETests {
 
     @Test
     @DisplayName("Method: POST, Endpoint: /api/v1/places should save place in db")
+    @WithMockUser(authorities = {"create_place"})
     public void createPlaceTest() throws Exception {
         // Arrange
         String placeName = "name";
@@ -111,6 +114,7 @@ public class PlacesE2ETests {
 
     @Test
     @DisplayName("Method: POST, Endpoint: /api/v1/places should throw 400, because request body is incorrect")
+    @WithMockUser(authorities = {"create_place"})
     public void createPlaceUnSuccessfulTest() throws Exception {
         // Arrange
         String placeName = "name";
@@ -147,6 +151,7 @@ public class PlacesE2ETests {
 
     @Test
     @DisplayName("Method: GET, Endpoint: /api/v1/places/{placeId} should throw 404 because place do not exist")
+    @WithMockUser(authorities = {"read_place"})
     public void findPlaceByIdunSuccessfulTest() throws Exception {
         // Arrange
         Long placeId = 1000L;
@@ -170,6 +175,7 @@ public class PlacesE2ETests {
 
     @Test
     @DisplayName("Method: GET, Endpoint: /api/v1/places/{placeId} should return place with specified id")
+    @WithMockUser(authorities = {"read_place"})
     public void findPlaceByIdTest() throws Exception {
         // Arrange
         Place place = new Place(null, "place", 50D, 60D, "name1", "timezone1", "ru1", null);
@@ -186,6 +192,7 @@ public class PlacesE2ETests {
 
     @Test
     @DisplayName("Method: PUT, Endpoint: /api/v1/places/{placeId} should update place in db")
+    @WithMockUser(authorities = {"update_place"})
     public void updatePlaceById() throws Exception {
         // Arrange
         Place place = new Place(null, "place", 50D, 60D, "name1", "timezone1", "ru1", null);
@@ -217,6 +224,7 @@ public class PlacesE2ETests {
 
     @Test
     @DisplayName("Method: PUT, Endpoint: /api/v1/places/{placeId} should update throw 400, because request body is incorrect")
+    @WithMockUser(authorities = {"update_place"})
     public void updatePlaceByIdUnSuccessfulTest() throws Exception {
         // Arrange
         String newPlaceName = "newPlaceName";
@@ -252,6 +260,7 @@ public class PlacesE2ETests {
 
     @Test
     @DisplayName("Method: DELETE, Endpoint: /api/v1/places/{placeId} should delete place in db")
+    @WithMockUser(authorities = {"remove_place"})
     public void deletePlaceByIdTest() throws Exception {
         // Arrange
         Place place = new Place(null, "place", 50D, 60D, "name1", "timezone1", "ru1", null);
@@ -263,5 +272,49 @@ public class PlacesE2ETests {
 
         // Assert
         assertThat(placeRepository.findById(place.getId())).isEmpty();
+    }
+
+    @Test
+    @DisplayName("Method: GET, Endpoint: /api/v1/places/{placeId} should return 403 because user do not have authority read_place")
+    @WithMockUser
+    public void findPlaceByIdUnAuthorizedTest() throws Exception {
+        // Arrange
+        // Act
+        // Assert
+        mockMvc.perform(get("/api/v1/places/1"))
+                .andExpect(status().is(403));
+    }
+
+    @Test
+    @DisplayName("Method: POST, Endpoint: /api/v1/places should return 403 because user do not have authority create_place")
+    @WithMockUser
+    public void createPlaceUnAuthorizedTest() throws Exception {
+        // Arrange
+        // Act
+        // Assert
+        mockMvc.perform(post("/api/v1/places").content("{}").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(403));
+    }
+
+    @Test
+    @DisplayName("Method: PUT, Endpoint: /api/v1/places/{placeId} should return 403 because user do not have authority update_place")
+    @WithMockUser
+    public void updatePlaceByIdUnAuthorizedTest() throws Exception {
+        // Arrange
+        // Act
+        // Assert
+        mockMvc.perform(put("/api/v1/places/5").content("{}").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(403));
+    }
+
+    @Test
+    @DisplayName("Method: DELETE, Endpoint: /api/v1/places/{placeId} should return 403 because user do not have authority remove_place")
+    @WithMockUser
+    public void deletePlaceByIdUnAuthorizedTest() throws Exception {
+        // Arrange
+        // Act
+        // Assert
+        mockMvc.perform(delete("/api/v1/places/5"))
+                .andExpect(status().is(403));
     }
 }

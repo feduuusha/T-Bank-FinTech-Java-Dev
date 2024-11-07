@@ -28,9 +28,9 @@ public class LoggingAspect {
 
     @Pointcut("within(org.tbank.fintech.lesson_9.exception.*)")
     public void exceptionsPointcut() {}
-    @Pointcut("within(org.tbank.fintech.lesson_9.service.impl.*)")
+    @Pointcut("within(org.tbank.fintech.lesson_9.service.impl.*) && !within(org.tbank.fintech.lesson_9.service.impl.AuthServiceImpl)")
     public void servicesPointcut() {}
-    @Pointcut("within(org.tbank.fintech.lesson_9.controller.*)")
+    @Pointcut("within(org.tbank.fintech.lesson_9.controller.*) && !within(org.tbank.fintech.lesson_9.controller.AuthRestController)")
     public void controllersPointcut() {}
 
 

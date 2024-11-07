@@ -33,7 +33,7 @@ public class StatisticEntityListener {
         ++countOfLoadOperations;
     }
 
-    @Scheduled(fixedRate = 10, timeUnit = TimeUnit.SECONDS)
+    @Scheduled(fixedRate = 10, initialDelay = 10, timeUnit = TimeUnit.MINUTES)
     public void statisticLogger() {
         log.info("Statistic of DB operations: \n"
                 + "Count of persist operations " + countOfPersistOperations + "\n"
