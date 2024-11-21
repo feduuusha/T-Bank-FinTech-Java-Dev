@@ -1,0 +1,144 @@
+[
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tbank.edu.benchmarks.MultipleConsumerKafkaTest.multipleConsumerConfig",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 5,
+        "jvm" : "/Users/fedor/Library/Java/JavaVirtualMachines/openjdk-21/Contents/Home/bin/java",
+        "jvmArgs" : [
+            "-server"
+        ],
+        "jdkVersion" : "21",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21+35-2513",
+        "warmupIterations" : 3,
+        "warmupTime" : "10 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 3,
+        "measurementTime" : "10 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 4.472093914160157,
+            "scoreError" : 0.12963554109189845,
+            "scoreConfidence" : [
+                4.342458373068258,
+                4.601729455252055
+            ],
+            "scorePercentiles" : {
+                "0.0" : 4.260780400519404,
+                "50.0" : 4.481902567289845,
+                "90.0" : 4.642592857920762,
+                "95.0" : 4.668354754928056,
+                "99.0" : 4.668354754928056,
+                "99.9" : 4.668354754928056,
+                "99.99" : 4.668354754928056,
+                "99.999" : 4.668354754928056,
+                "99.9999" : 4.668354754928056,
+                "100.0" : 4.668354754928056
+            },
+            "scoreUnit" : "ops/ms",
+            "rawData" : [
+                [
+                    4.308386827112523,
+                    4.4219425788441935,
+                    4.34980317690834
+                ],
+                [
+                    4.515836956901446,
+                    4.505800796353339,
+                    4.40300903419279
+                ],
+                [
+                    4.625418259915898,
+                    4.481902567289845,
+                    4.260780400519404
+                ],
+                [
+                    4.348635909300344,
+                    4.668354754928056,
+                    4.58713447256018
+                ],
+                [
+                    4.560357497998399,
+                    4.575588290637241,
+                    4.468457188940361
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tbank.edu.benchmarks.MultipleConsumerKafkaTest.multipleConsumerConfig",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 5,
+        "jvm" : "/Users/fedor/Library/Java/JavaVirtualMachines/openjdk-21/Contents/Home/bin/java",
+        "jvmArgs" : [
+            "-server"
+        ],
+        "jdkVersion" : "21",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21+35-2513",
+        "warmupIterations" : 3,
+        "warmupTime" : "10 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 3,
+        "measurementTime" : "10 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 0.22776120094553715,
+            "scoreError" : 0.009169721723213863,
+            "scoreConfidence" : [
+                0.21859147922232328,
+                0.23693092266875102
+            ],
+            "scorePercentiles" : {
+                "0.0" : 0.2160882837855353,
+                "50.0" : 0.230550769929248,
+                "90.0" : 0.23929461070973962,
+                "95.0" : 0.24561803798679788,
+                "99.0" : 0.24561803798679788,
+                "99.9" : 0.24561803798679788,
+                "99.99" : 0.24561803798679788,
+                "99.999" : 0.24561803798679788,
+                "99.9999" : 0.24561803798679788,
+                "100.0" : 0.24561803798679788
+            },
+            "scoreUnit" : "ms/op",
+            "rawData" : [
+                [
+                    0.2195743575663095,
+                    0.21973890651495848,
+                    0.2180810412627176
+                ],
+                [
+                    0.2221729657683257,
+                    0.2160882837855353,
+                    0.21634754549190965
+                ],
+                [
+                    0.24561803798679788,
+                    0.23164869946543865,
+                    0.23363081025581123
+                ],
+                [
+                    0.2350789925250341,
+                    0.22996634410751207,
+                    0.23278630397766922
+                ],
+                [
+                    0.23183467180045395,
+                    0.23330028374533582,
+                    0.230550769929248
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    }
+]
+
+
