@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  rabbitmq:
+    image: rabbitmq:latest
+    container_name: rabbitmq
+    hostname: rabbitmq
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Moscow
+      - RABBITMQ_DEFAULT_USER=rab
+      - RABBITMQ_DEFAULT_PASS=1234
+      - RABBITMQ_DEFAULT_VHOST=vhost
+      - RABBITMQ_VM_MEMORY_HIGH_WATERMARK=0.7
+    volumes:
+      - ./rabbitmq_data:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        rabbitmq-plugins enable rabbitmq_management
+        rabbitmqctl set_vm_memory_high_watermark absolute "7G"
+        rabbitmq-server
